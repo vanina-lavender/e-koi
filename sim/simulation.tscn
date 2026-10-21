@@ -1,0 +1,281 @@
+[gd_scene load_steps=12 format=3 uid="uid://bbwg4brv2r62k"]
+
+[ext_resource type="Script" uid="uid://dfh1doyxncx56" path="res://sim/Simulation.cs" id="1_ytry2"]
+[ext_resource type="Script" uid="uid://b48hiluogih82" path="res://sim/PauseHandler.cs" id="2_fwhuv"]
+[ext_resource type="FontFile" uid="uid://bluseqkuc10nh" path="res://assets/fonts/GoudyBookletter1911.otf" id="2_n406p"]
+[ext_resource type="Theme" uid="uid://cawycyy4aue6" path="res://menus/rename_menu.tres" id="3_l2rqa"]
+[ext_resource type="Shader" uid="uid://dqcsx4euhq5fe" path="res://sim/simulation_bg.gdshader" id="3_rwg05"]
+[ext_resource type="Script" uid="uid://bb55y2yp0toim" path="res://sim/Pause.cs" id="4_f0aj5"]
+
+[sub_resource type="Gradient" id="Gradient_fwhuv"]
+interpolation_mode = 2
+offsets = PackedFloat32Array(0.17666666, 1)
+colors = PackedColorArray(0, 0.23, 0.19933337, 1, 0.333, 0.43635, 0.45, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_rwg05"]
+gradient = SubResource("Gradient_fwhuv")
+width = 1920
+height = 1080
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_rwg05"]
+noise_type = 2
+frequency = 0.0303
+fractal_type = 0
+cellular_distance_function = 1
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7lf05"]
+width = 1920
+height = 1080
+noise = SubResource("FastNoiseLite_rwg05")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7lf05"]
+shader = ExtResource("3_rwg05")
+shader_parameter/bg = SubResource("GradientTexture2D_rwg05")
+shader_parameter/noise = SubResource("NoiseTexture2D_7lf05")
+
+[node name="Simulation" type="Node2D"]
+process_mode = 1
+script = ExtResource("1_ytry2")
+
+[node name="PauseHandler" type="Node" parent="."]
+process_mode = 3
+script = ExtResource("2_fwhuv")
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(960, 540)
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="ColorRect" type="TextureRect" parent="Background"]
+material = SubResource("ShaderMaterial_7lf05")
+offset_right = 1944.0
+offset_bottom = 1104.0
+texture = SubResource("GradientTexture2D_rwg05")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="GUI" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GUI"]
+layout_mode = 0
+offset_right = 2330.0
+offset_bottom = 1080.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/GUI/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 2
+theme_override_constants/separation = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(450, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 100
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer/MarginContainer/HBoxContainer/CenterContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+
+[node name="Collapse" type="Button" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer/MarginContainer/HBoxContainer/CenterContainer/MarginContainer"]
+custom_minimum_size = Vector2(20, 100)
+layout_mode = 2
+text = "-"
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer/MarginContainer/HBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Name" type="RichTextLabel" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_n406p")
+theme_override_font_sizes/normal_font_size = 32
+bbcode_enabled = true
+text = "[center]Click a Fish!"
+fit_content = true
+
+[node name="Age" type="RichTextLabel" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_n406p")
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "[center]Age: ???"
+fit_content = true
+
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Window" type="PanelContainer" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+
+[node name="HSeparator2" type="HSeparator" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Data" type="RichTextLabel" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer/MarginContainer/HBoxContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_n406p")
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "[center]Click a fish to learn more about them!
+Some fish have birth mutations [?]
+And some have birth defects [!]"
+fit_content = true
+
+[node name="InspectorSpacer" type="Container" parent="CanvasLayer/GUI/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/GUI/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_right = 410
+
+[node name="CenterContainer" type="PanelContainer" parent="CanvasLayer/GUI/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+mouse_force_pass_scroll_events = false
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/GUI/VBoxContainer/MarginContainer/CenterContainer"]
+layout_mode = 2
+
+[node name="FoodTypes" type="HBoxContainer" parent="CanvasLayer/GUI/VBoxContainer/MarginContainer/CenterContainer/CenterContainer"]
+layout_mode = 2
+
+[node name="Herbivore" type="Button" parent="CanvasLayer/GUI/VBoxContainer/MarginContainer/CenterContainer/CenterContainer/FoodTypes"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+
+[node name="Omnivore" type="Button" parent="CanvasLayer/GUI/VBoxContainer/MarginContainer/CenterContainer/CenterContainer/FoodTypes"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+
+[node name="Carnivore" type="Button" parent="CanvasLayer/GUI/VBoxContainer/MarginContainer/CenterContainer/CenterContainer/FoodTypes"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+
+[node name="Rename" type="PanelContainer" parent="CanvasLayer"]
+visible = false
+offset_right = 1920.0
+offset_bottom = 1080.0
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Rename"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Rename/CenterContainer"]
+custom_minimum_size = Vector2(300, 150)
+layout_mode = 2
+theme = ExtResource("3_l2rqa")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Rename/CenterContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Rename/CenterContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/Rename/CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("2_n406p")
+theme_override_font_sizes/normal_font_size = 30
+bbcode_enabled = true
+text = "[center]Rename your fish:"
+fit_content = true
+
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer/Rename/CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_n406p")
+theme_override_font_sizes/font_size = 30
+placeholder_text = "Begin typing..."
+alignment = 1
+max_length = 24
+backspace_deletes_composite_character_enabled = true
+caret_blink = true
+
+[node name="Pause" type="ColorRect" parent="CanvasLayer"]
+process_mode = 2
+visible = false
+custom_minimum_size = Vector2(1920, 1080)
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 0.22352941)
+script = ExtResource("4_f0aj5")
+
+[node name="CenterContainer" type="CenterContainer" parent="CanvasLayer/Pause"]
+custom_minimum_size = Vector2(1920, 1080)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/Pause/CenterContainer"]
+custom_minimum_size = Vector2(600, 400)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Pause/CenterContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Pause/CenterContainer/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/Pause/CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 40
+bbcode_enabled = true
+text = "[center][tornado][shake][rainbow][pulse]Paused"
+fit_content = true
+
+[node name="HSeparator" type="HSeparator" parent="CanvasLayer/Pause/CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Resume" type="Button" parent="CanvasLayer/Pause/CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Resume"
+
+[node name="Settings" type="Button" parent="CanvasLayer/Pause/CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Settings"
+
+[node name="Quit" type="Button" parent="CanvasLayer/Pause/CenterContainer/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Quit"
